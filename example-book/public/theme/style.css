@@ -1,0 +1,16 @@
+body {
+  font-family: Raleway, sans-serif;
+  font-size: 16px;
+}
+h1 {
+  color: red;
+  margin-top:3rem;
+}
+
+h2 {
+  margin-top:3rem;
+}
+
+h3 {
+  font-style: italic;
+}
