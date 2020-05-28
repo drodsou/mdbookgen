@@ -14,6 +14,10 @@ git clone or download zip this repo and copy book-example folder to some other f
 
 from book root run `mdbookgen' and the chapters in /chapters folder willl be merged into `/public/index.html` using the layout in `/public/theme/layout.js'
 
+# vscode live server extension
+
+use live server extension to open index.html and see changes in real time
+
 # vscode renumber folder extension
 
 to move .md files around the `Renumber folder` VS Code extension may be helpful:

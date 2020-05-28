@@ -1,14 +1,86 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+
+  height: 100vh;
+}
 body {
   font-family: Raleway, sans-serif;
   font-size: 16px;
+  height:100%;
+  display:flex;
+
+  margin:0;
+  height: auto;
 }
+
+nav {
+  width: 280px;
+  position: fixed;
+}
+
+article {
+  margin-left: 280px;
+  max-width:800px;
+  width: 800px;
+}
+
+ul {
+  list-style: none;
+  padding:0;
+  margin:0;
+  width: 100%;
+  overflow: hidden;
+}
+
+li {
+  padding: 0px;
+  width: 100%;
+}
+
+nav > ul > li > ul {
+  height:0;
+}
+nav > ul > li.expanded > ul {
+  height:auto;
+}
+
+ul a {
+  text-decoration: none;
+  display:inline-block;
+  width: 100%;
+}
+
+ul a:hover {
+  background: hsl(0, 0%, 90%);
+}
+
+ul > li > a {
+  padding: 0 0 0 20px;
+  color: red;
+}
+
+ul > li > ul > li > a {
+  padding: 0 0 0 40px;
+  color: black;
+}
+
+ul > li > ul > li > ul > li > a {
+  padding: 0 0 0 60px;
+  color: black;
+  font-style: italic;
+}
+
+/* ----- HEADINGS ----- */
 h1 {
   color: red;
-  margin-top:3rem;
+  padding-top:13rem;
 }
 
 h2 {
-  margin-top:3rem;
+  padding-top:3rem;
 }
 
 h3 {

@@ -16,6 +16,7 @@ import {curlyTransformRun} from '/users/drodsou/git/denolib/ts/curly_template/cu
 import {watch} from '/users/drodsou/git/denolib/ts/watch_throttled/mod.ts';
 
 
+/** build all chapter folders concatenating everything in one file and saving as index.html */
 async function buildBook (bookFolder='', props:any={}, chapters:string[]=[]) {
 
   bookFolder = bookFolder || slashJoin(Deno.cwd(), 'chapters');
@@ -32,17 +33,38 @@ async function buildBook (bookFolder='', props:any={}, chapters:string[]=[]) {
 
   for (let chapter of chapters) {
     
-    bookContent += '# ' + chapter.split('#')[1].replace(/ /g,'') + '\n\n';
+    bookContent += '# ' + chapter.split('#')[1].replace(/_/g,' ') + '\n\n';
 
     bookContent += await buildChapter( slashJoin(bookFolder, chapter), props);
   }
 
-  let htmlContent = layout({}, marked(bookContent, null, null));
+  let markedSlugger = new marked.Slugger();
+  let tableOfContents = bookContent
+    .split('\n')
+    .filter(e=>e.startsWith('#'))
+    .map(e=>{
+      let eText = e.replace(/#+ /,'');
+      let eAnchor = markedSlugger.slug(eText);
+      let eLink = `<a href="#${eAnchor}">${eText}</a>`
+      let eIndentation = ' '.repeat( (e.split('#').length -2) * 2);
+      return eIndentation + '- ' + eLink;
+    })
+    .join('\n');
+
+  let htmlTOC = marked(tableOfContents, null, null);
+
+  
+  let disclaimer = `<!-- 
+  Automatically generated from /public/theme/layout.js 
+  Any edition to this file will be lost y next rebuild
+  -->\n`;
+
+  let htmlContent = disclaimer + layout({htmlTOC}, marked(bookContent, null, null));
   Deno.writeTextFileSync(Deno.cwd() + '/public/index.html', htmlContent);
 }
 
 
-
+/** build a chapter folder concatenating all .md files there */
 async function buildChapter (chapterFolder:string, props:any={}) {
 
   let files = [...Deno.readDirSync(chapterFolder)]
@@ -53,9 +75,9 @@ async function buildChapter (chapterFolder:string, props:any={}) {
   let allMdContent = '';
   let allProps:any = {...props};
   for (let file of files) {
-    let mdTitle = '## ' + file.split('#')[1].replace('.md','').replace(/ /g,'');
+    let mdTitle = '## ' + file.split('#')[1].replace('.md','').replace(/_/g,' ');
 
-    console.log('file', file);
+    //console.log('file', file);
     let mdParts = getMdParts(Deno.readTextFileSync(chapterFolder + '/' + file));
 
     let mdContent = mdParts.content;
@@ -76,6 +98,8 @@ async function buildChapter (chapterFolder:string, props:any={}) {
 
 }
 
+
+
 // -- cli main
 if (import.meta.main) {
   await buildBook(Deno.args[0], Deno.args[1]);
@@ -84,3 +108,5 @@ if (import.meta.main) {
   }});
   console.log(`Watching ${Deno.cwd()}`);
 }
+
+
