@@ -2,9 +2,24 @@
   box-sizing: border-box;
 }
 
-html {
+[data-theme="dark"] {
+  --color-fg: white;
+  --color-contrast: hsl(23, 100%, 63%);;
+  --color-bg: hsl(0, 0%, 0%);
+  --color-bg-nav: hsl(0, 0%, 20%);
+}
 
+
+[data-theme="light"] {
+  --color-fg: black;
+  --color-contrast: hsl(23, 100%, 63%);;
+  --color-bg: hsl(0, 0%, 100%);
+  --color-bg-nav: hsl(0, 0%, 98%);
+}
+
+html {
   height: 100vh;
+  /* dark */
 }
 body {
   font-family: Raleway, sans-serif;
@@ -14,17 +29,25 @@ body {
 
   margin:0;
   height: auto;
+
+  color: var(--color-fg);
+  background: var(--color-bg);
 }
 
 nav {
   width: 280px;
   position: fixed;
+  background: var(--color-bg-nav);
+
+  height:100%;
+  padding-top: 10px;
 }
 
 article {
   margin-left: 280px;
   max-width:800px;
   width: 800px;
+  padding: 2rem;
 }
 
 ul {
@@ -57,25 +80,31 @@ ul a:hover {
   background: hsl(0, 0%, 90%);
 }
 
-ul > li > a {
+ul > li > a, 
+ul > li > a:visited  {
   padding: 0 0 0 20px;
-  color: red;
+  color: var(--color-contrast);
+  font-weight: bold;
 }
 
-ul > li > ul > li > a {
+ul > li > ul > li > a,
+ul > li > ul > li > a:visited
+{
   padding: 0 0 0 40px;
-  color: black;
+  color: var(--color-fg);
 }
 
-ul > li > ul > li > ul > li > a {
+ul > li > ul > li > ul > li > a,
+ul > li > ul > li > ul > li > a:visited
+ {
   padding: 0 0 0 60px;
-  color: black;
+  color: var(--color-fg);
   font-style: italic;
 }
 
 /* ----- HEADINGS ----- */
 h1 {
-  color: red;
+  color: var(--color-contrast);
   padding-top:13rem;
 }
 

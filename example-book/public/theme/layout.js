@@ -7,16 +7,16 @@ export default (props,content) => /*html*/`
     <link rel="stylesheet" href="theme/style.css"/>
     <title>Document</title>
   </head>
-  <body>
+  <body data-theme="light">
     
     <nav>
       ${props.htmlTOC}
     </nav>
     <article>
-      <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
       ${content}
     </article>
-  
+
+    <script type="module" src="theme/script.js"></script>
   </body>
   </html>
 `;
