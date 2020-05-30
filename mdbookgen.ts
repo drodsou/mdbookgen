@@ -1,7 +1,6 @@
 import {slashJoin} from 'https://raw.githubusercontent.com/drodsou/denolib/master/ts/slash_join/mod.ts';
 
-
-import getMdParts from 'https://raw.githubusercontent.com/drodsou/denolib/ts/markdown2/get_md_parts.ts';
+import getMdParts from 'https://raw.githubusercontent.com/drodsou/denolib/master/ts/markdown2/get_md_parts.ts';
 
 import {timeToRead} from 'https://raw.githubusercontent.com/drodsou/denolib/master/ts/time_to_read/mod.ts';
 
