@@ -7,12 +7,12 @@ import {timeToRead} from 'https://raw.githubusercontent.com/drodsou/denolib/mast
 import marked from 'https://unpkg.com/marked@1.0.0/lib/marked.esm.js';
 
 
-import {curlyTransformRef} from 'https://raw.githubusercontent.com/drodsou/denolib/ts/curly_template/curly_transform_ref.ts';
-import {curlyTransformProp} from 'https://raw.githubusercontent.com/drodsou/denolib/ts/curly_template/curly_transform_prop.ts';
-import {curlyTransformInclude} from 'https://raw.githubusercontent.com/drodsou/denolib/ts/curly_template/curly_transform_include.ts';
-import {curlyTransformRun} from 'https://raw.githubusercontent.com/drodsou/denolib/ts/curly_template/curly_transform_run.ts';
+import {curlyTransformRef} from 'https://raw.githubusercontent.com/drodsou/denolib/master/ts/curly_template/curly_transform_ref.ts';
+import {curlyTransformProp} from 'https://raw.githubusercontent.com/drodsou/denolib/master/ts/curly_template/curly_transform_prop.ts';
+import {curlyTransformInclude} from 'https://raw.githubusercontent.com/drodsou/denolib/master/ts/curly_template/curly_transform_include.ts';
+import {curlyTransformRun} from 'https://raw.githubusercontent.com/drodsou/denolib/master/ts/curly_template/curly_transform_run.ts';
 
-import {watch} from 'https://raw.githubusercontent.com/drodsou/denolib/ts/watch_throttled/mod.ts';
+import {watch} from 'https://raw.githubusercontent.com/drodsou/denolib/master/ts/watch_throttled/mod.ts';
 
 import {unzipRemote} from 'https://raw.githubusercontent.com/drodsou/denolib/master/ts/unzip_remote/unzip_remote.ts';
 
