@@ -6,7 +6,13 @@ Simple enough to be understandable and hackable
 
 # install
 
-TODO: deno install -A -f ...
+You'll need https://deno.land installed.
+
+Then run in a terminal:
+
+```deno install -A -f https://raw.githubusercontent.com/drodsou/mdbookgen/v1.0.0/mdbookgen.ts```
+
+NOTE: Check and use `last release number`. Don't just use current mdbookgen.ts in master as it may be unstable or not work at all as advancements to next version are commited to master branch.
 
 # initialize book folder
 ```
@@ -19,11 +25,13 @@ creates default book structure
 
 ## writing the book
 
-from book root run `mdbookgen` and the chapters in /chapters folder willl be merged into `/public/index.html` using the layout in `/public/theme/layout.js`
+I recommend editing .md files with Visual Studio Code, with Live Server extension enabled. Complementarily you could use e.g.  Typora or any other text editor you feel comfortable with.
 
-if exists `/doc/props.js` will be used for curly variables in your .md files (see bellow)
+From book root folder, run `mdbookgen` and the chapters in `/chapters` folder willl be merged into `/public/index.html` using the layout in `/public/theme/layout.js`
 
-It also keeps watching changes
+If `/doc/props.js` exists it will be used for curly variables in your .md files (see bellow)
+
+It also keeps watching changes to see results in realtime in your browser.
 
 # vscode live server extension
 
@@ -47,6 +55,11 @@ In your markdown you can use:
 # using images
 
 put them in public img and reference them in your .md files as "img/whatever.jpg"
+
+# advanced customization
+
+If you are into programming you can add a copy of mdbookgen.ts to your book folder and use it for build with `deno run -A mdbookgent.ts` 
+It is just one file, simple enough to be understandable on what it does, and modify it as you please for your own needs, with all the power of a full programming language (javascript/typescript) at your disposal.
 
 # TODO
 

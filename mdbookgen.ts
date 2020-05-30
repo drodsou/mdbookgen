@@ -1,20 +1,23 @@
 import {slashJoin} from 'https://raw.githubusercontent.com/drodsou/denolib/master/ts/slash_join/mod.ts';
 
 
-import getMdParts from '/users/drodsou/git/denolib/ts/markdown2/get_md_parts.ts';
+import getMdParts from 'https://raw.githubusercontent.com/drodsou/denolib/ts/markdown2/get_md_parts.ts';
 
 import {timeToRead} from 'https://raw.githubusercontent.com/drodsou/denolib/master/ts/time_to_read/mod.ts';
 
 import marked from 'https://unpkg.com/marked@1.0.0/lib/marked.esm.js';
 
 
-import {curlyTransformRef} from '/users/drodsou/git/denolib/ts/curly_template/curly_transform_ref.ts';
-import {curlyTransformProp} from '/users/drodsou/git/denolib/ts/curly_template/curly_transform_prop.ts';
-import {curlyTransformInclude} from '/users/drodsou/git/denolib/ts/curly_template/curly_transform_include.ts';
-import {curlyTransformRun} from '/users/drodsou/git/denolib/ts/curly_template/curly_transform_run.ts';
+import {curlyTransformRef} from 'https://raw.githubusercontent.com/drodsou/denolib/ts/curly_template/curly_transform_ref.ts';
+import {curlyTransformProp} from 'https://raw.githubusercontent.com/drodsou/denolib/ts/curly_template/curly_transform_prop.ts';
+import {curlyTransformInclude} from 'https://raw.githubusercontent.com/drodsou/denolib/ts/curly_template/curly_transform_include.ts';
+import {curlyTransformRun} from 'https://raw.githubusercontent.com/drodsou/denolibb/ts/curly_template/curly_transform_run.ts';
 
-import {watch} from '/users/drodsou/git/denolib/ts/watch_throttled/mod.ts';
+import {watch} from 'https://raw.githubusercontent.com/drodsou/denolib/ts/watch_throttled/mod.ts';
 
+import {unzipRemote} from 'https://raw.githubusercontent.com/drodsou/denolib/master/ts/unzip_remote/unzip_remote.ts';
+
+import {VERSION} from './version.ts';
 
 /** 
  * build all chapter folders concatenating everything in one file and saving as index.html 
@@ -104,6 +107,24 @@ async function buildChapter (chapterFolder:string, props:any={}) {
 
 // -- cli main
 if (import.meta.main) {
+
+  // -- init?
+  if (Deno.args[0] === 'init') {
+    unzipRemote(
+      `https://github.com/drodsou/mdbookgen/archive/${VERSION}.zip`, 
+      Deno.cwd(), 
+      `mdbookgen-${VERSION.slice(1)}/example-book`
+    );
+    console.log(`
+      Done. Now you can:
+      - open vscode (code .) 
+      - open public/index.html with live server extension
+      - run 'mdbookgen' to watch your changes in realtime
+    `);
+    Deno.exit(0);
+  }
+
+  // -- build
   let bookFolder = Deno.args[0] || Deno.cwd();
   let propsMod = await import('file://' + bookFolder + '/props.js')
     .catch(e=>{

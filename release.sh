@@ -7,6 +7,9 @@ fi
 
 read -p "About to commit release $1. Are you sure? (y/N) " -n 1 -r
 echo    # (optional) move to a new line
+
+echo "export const VERSION = '$1';" > version.ts
+
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     # do dangerous stuff
   git add -A 
