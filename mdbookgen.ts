@@ -10,7 +10,8 @@ import marked from 'https://unpkg.com/marked@1.0.0/lib/marked.esm.js';
 import {curlyTransformRef} from 'https://raw.githubusercontent.com/drodsou/denolib/master/ts/curly_template/curly_transform_ref.ts';
 import {curlyTransformProp} from 'https://raw.githubusercontent.com/drodsou/denolib/master/ts/curly_template/curly_transform_prop.ts';
 import {curlyTransformInclude} from 'https://raw.githubusercontent.com/drodsou/denolib/master/ts/curly_template/curly_transform_include.ts';
-import {curlyTransformRun} from 'https://raw.githubusercontent.com/drodsou/denolib/master/ts/curly_template/curly_transform_run.ts';
+// import {curlyTransformRun} from 'https://raw.githubusercontent.com/drodsou/denolib/master/ts/curly_template/curly_transform_run.ts';
+import {curlyTransformRun} from '../denolib/ts/curly_template/curly_transform_run.ts';
 
 import {watch} from 'https://raw.githubusercontent.com/drodsou/denolib/master/ts/watch_throttled/mod.ts';
 
@@ -23,23 +24,23 @@ import {VERSION} from './version.ts';
  * */
 async function buildBook (bookFolder='', props:any={}, chapters:string[]=[]) {
 
-  bookFolder = bookFolder || slashJoin(Deno.cwd(), 'chapters');
+  bookFolder = bookFolder ? slashJoin (bookFolder) : slashJoin(Deno.cwd());
+  let chaptersFolder = slashJoin(bookFolder, '/chapters');
   let layoutMod = await import('file://' + Deno.cwd() + '/public/theme/layout.js' + '?' + Math.random());
   let layout = layoutMod.default;
 
   let bookContent = '';
 
   if (!chapters.length) {
-    chapters = [...Deno.readDirSync(bookFolder)]
+    chapters = [...Deno.readDirSync(chaptersFolder)]
       .filter(e=>e.isDirectory)
       .map(e=>e.name);
   }
 
   for (let chapter of chapters) {
-    
-    bookContent += '# ' + chapter.split('#')[1].replace(/_/g,' ') + '\n\n';
+    bookContent += '# ' + chapter.split('.')[1].replace(/_/g,' ') + '\n\n';
 
-    bookContent += await buildChapter( slashJoin(bookFolder, chapter), props);
+    bookContent += await buildChapter( slashJoin(chaptersFolder, chapter), props);
   }
 
   let markedSlugger = new marked.Slugger();
@@ -79,27 +80,48 @@ async function buildChapter (chapterFolder:string, props:any={}) {
   let allMdContent = '';
   let allProps:any = {...props};
   for (let file of files) {
-    let mdTitle = '## ' + file.split('#')[1].replace('.md','').replace(/_/g,' ');
+    let mdTitle = '## ' + file.split('.')[1].replace('.md','').replace(/_/g,' ');
+
+    let fileAbs = chapterFolder + '/' + file;
 
     //console.log('file', file);
-    let mdParts = getMdParts(Deno.readTextFileSync(chapterFolder + '/' + file));
+    let mdParts = getMdParts(Deno.readTextFileSync(fileAbs));
 
     let mdContent = mdParts.content;
 
     allProps = {...allProps, ...mdParts.frontmatter}    
   
     // -- process variables
-    mdContent = curlyTransformRef(mdContent, file, allProps).text;
-    mdContent = curlyTransformProp(mdContent, file, allProps).text;
-    mdContent = curlyTransformInclude(mdContent, file).text;
-    mdContent = (await curlyTransformRun(mdContent, file, allProps)).text;
+    // try {
+      mdContent = curlyTransformRef(mdContent, fileAbs, allProps).text;
+      mdContent = curlyTransformProp(mdContent, fileAbs, allProps).text;
+      mdContent = curlyTransformInclude(mdContent, fileAbs).text;
+      mdContent = (await curlyTransformRun(mdContent, fileAbs, allProps)).text;
+    // } catch (e) {
+    //   console.log('\n----- CURLY TRANSFORM ERROR -----');
+    //   console.log(e);
+    // }
     
-    allMdContent += '\n\n' + mdTitle + '\n\n' + mdParts.content;
+    allMdContent += '\n\n' + mdTitle + '\n\n' + mdContent;
 
   };
 
   return allMdContent;
 
+}
+
+export async function getProps (bookFolder:string) {
+  let props:any;
+  let propsFile = 'file://' + bookFolder + '/doc/props.js'  + '?' + Math.random();
+  let propsFileExists = (await Deno.stat(propsFile).catch(e=>e)).isFile;
+  if (propsFileExists) {
+    props = { props: {refs:{}} };
+    console.log(`INFO: props.js not found in ${bookFolder}/doc.`);
+  } else {
+    let propsMod = await import(propsFile)
+    props = propsMod.props
+  }
+  return props;
 }
 
 
@@ -124,19 +146,15 @@ if (import.meta.main) {
   }
 
   // -- build
-  let bookFolder = Deno.args[0] || Deno.cwd();
-  let propsMod = await import('file://' + bookFolder + '/props.js')
-    .catch(e=>{
-      console.log(
-        `INFO: props.js not found in ${bookFolder}`,
-        '\nYou may want to create one to use {{prop:..}} and {{ref:...} in your .md files'
-      )
-      return { props: {refs:{}} }
-    });
+  let bookFolder = Deno.args[0] || slashJoin(Deno.cwd());
+  let props = await getProps(bookFolder);
+  console.log(`Props loaded from ${bookFolder}/doc/props.js`);
+  await buildBook(bookFolder, props);
 
-  await buildBook(Deno.args[0], propsMod.props);
   watch({dirs:['.'], exclude:['public/index.html'], fn: async (dirs:any)=>{
-    await buildBook(Deno.args[0], Deno.args[1]);
+    props = await getProps(bookFolder);
+    await buildBook(bookFolder, props);
+    console.log('Book compiled');
   }});
   console.log(`Watching ${Deno.cwd()}`);
 }

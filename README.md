@@ -37,6 +37,12 @@ It also keeps watching changes to see results in realtime in your browser.
 
 use live server extension to open index.html and see changes in real time
 
+# important: chapter folder and md naming
+
+both chapter folders and .md files must have the form:
+
+**00.Chapter_title.md** with first `.` mandatory and words separated by  `_`, so in the final text the title will become **Chapter title**
+
 # vscode renumber folder extension
 
 to move .md files around the `Renumber folder` VS Code extension may be helpful:
