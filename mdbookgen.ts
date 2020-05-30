@@ -16,7 +16,9 @@ import {curlyTransformRun} from '/users/drodsou/git/denolib/ts/curly_template/cu
 import {watch} from '/users/drodsou/git/denolib/ts/watch_throttled/mod.ts';
 
 
-/** build all chapter folders concatenating everything in one file and saving as index.html */
+/** 
+ * build all chapter folders concatenating everything in one file and saving as index.html 
+ * */
 async function buildBook (bookFolder='', props:any={}, chapters:string[]=[]) {
 
   bookFolder = bookFolder || slashJoin(Deno.cwd(), 'chapters');
@@ -102,7 +104,17 @@ async function buildChapter (chapterFolder:string, props:any={}) {
 
 // -- cli main
 if (import.meta.main) {
-  await buildBook(Deno.args[0], Deno.args[1]);
+  let bookFolder = Deno.args[0] || Deno.cwd();
+  let propsMod = await import('file://' + bookFolder + '/props.js')
+    .catch(e=>{
+      console.log(
+        `INFO: props.js not found in ${bookFolder}`,
+        '\nYou may want to create one to use {{prop:..}} and {{ref:...} in your .md files'
+      )
+      return { props: {refs:{}} }
+    });
+
+  await buildBook(Deno.args[0], propsMod.props);
   watch({dirs:['.'], exclude:['public/index.html'], fn: async (dirs:any)=>{
     await buildBook(Deno.args[0], Deno.args[1]);
   }});
