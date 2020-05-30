@@ -104,12 +104,12 @@ async function buildChapter (chapterFolder:string, props:any={}) {
 
 
 
-// -- cli main
+// --- CLI MAIN
 if (import.meta.main) {
 
   // -- init?
   if (Deno.args[0] === 'init') {
-    unzipRemote(
+    await unzipRemote(
       `https://github.com/drodsou/mdbookgen/archive/${VERSION}.zip`, 
       Deno.cwd(), 
       `mdbookgen-${VERSION.slice(1)}/example-book`
